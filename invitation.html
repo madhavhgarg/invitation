@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message For You</title>
+    <!-- Importing the signature-style font 'La Belle Aurore' -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=La+Belle+Aurore&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Define custom font family */
+        .font-la-belle-aurore {
+            font-family: 'La Belle Aurore', cursive;
+        }
+        
+        /* Apply the background to the body and make it fixed.
+          - background-attachment: fixed is the key property that makes the image stay in place while scrolling.
+        */
+        body {
+            /* Softer, more subtle text shadow for a thinner appearance */
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed; 
+        }
+
+        /* Basic animation for the text to fade in */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 2s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <!-- 
+      Dark overlay for the entire page
+      - It's fixed so it covers the background image even when scrolling.
+      - z-[-1] places it behind the text content but on top of the body's background.
+    -->
+    <div class="fixed inset-0 bg-black bg-opacity-60 z-[-1]"></div>
+
+    <!-- 
+      Main content container 
+      - Fills the initial screen and centers the content.
+    -->
+    <div class="relative min-h-screen flex items-center justify-center p-6">
+        
+        <!-- 
+          Text Content Container
+          - This holds all the text and buttons, centered.
+        -->
+        <div class="fade-in w-full max-w-4xl text-white text-center">
+            
+            <!-- NEW: Added "To Archita G." at the start -->
+            <h3 class="font-la-belle-aurore text-4xl md:text-5xl mb-10">
+                To<br>Archita G.
+            </h3>
+
+            <!-- GRAMMAR CORRECTED in this paragraph -->
+            <p class="font-la-belle-aurore text-3xl md:text-4xl leading-relaxed mb-12">
+                From the moment I met you, I knew you were the one. I never doubted you for a second, nor did I ever stop loving you. Tomorrow will be the first birthday I will feel content with what we have achieved together. We have made memories, studied together, and experienced life together.
+            </p>
+            
+            <!-- GRAMMAR CORRECTED in this heading -->
+            <h2 class="font-la-belle-aurore text-5xl md:text-7xl mb-12 text-white">
+                To make tomorrow memorable, will you join me on a cute date at Virgin Courtyard?
+            </h2>
+            
+            <!-- Slightly smaller font size -->
+            <div class="flex justify-center items-center gap-6">
+                <button id="yesBtn" class="font-la-belle-aurore bg-transparent hover:bg-white/20 text-white py-3 px-10 border border-white rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg text-3xl">
+                    Yes
+                </button>
+                <button id="noBtn" class="font-la-belle-aurore bg-transparent hover:bg-white/20 text-white py-3 px-10 border border-white rounded-full transition-all duration-300 transform hover:scale-110 shadow-lg text-3xl">
+                    No
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 
+      Confirmation Section
+      - This section is below the initial view and will be scrolled to.
+      - The message is hidden by default and will fade in.
+    -->
+    <div id="confirmationSection" class="h-screen flex items-center justify-center p-6">
+        <!-- Slightly smaller font size -->
+        <h2 id="confirmationMessage" class="font-la-belle-aurore text-4xl md:text-6xl text-white text-center transition-opacity duration-500 opacity-0">
+            <!-- This text will be set by JavaScript -->
+        </h2>
+    </div>
+
+    <!-- 
+      JavaScript to set the background image and handle the new click event.
+    -->
+    <script>
+        // Set the background image on the entire page body.
+        // NEW: Updated image filename
+        const imageUrl = 'WhatsApp Image 2025-08-15 at 21.55.42_07706679.jpg';
+        
+        if (imageUrl) {
+            document.body.style.backgroundImage = `url('${imageUrl}')`;
+        }
+
+        // --- UPDATED JAVASCRIPT LOGIC ---
+
+        // Get the elements we need to work with
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const confirmationSection = document.getElementById('confirmationSection');
+        const confirmationMessage = document.getElementById('confirmationMessage');
+
+        // State variables to track clicks
+        let yesClickCount = 0;
+        let noClickCount = 0;
+
+        // Arrays of messages to cycle through
+        const yesMessages = [
+            "See you tomorrow (11/15) at 1 p.m.",
+            "I'm so excited!",
+            "It's a date!",
+            "Don't be late!"
+        ];
+
+        const noMessages = [
+            "You don't have a choice.",
+            "Seriously, you can't say no.",
+            "Resistance is futile.",
+            "I'll see you there anyway ;)"
+        ];
+
+        // Add a click event listener to the "Yes" button
+        yesBtn.addEventListener('click', () => {
+            // Get the next message, looping back to the start if needed
+            const message = yesMessages[yesClickCount % yesMessages.length];
+            updateConfirmationMessage(message);
+            yesClickCount++;
+        });
+
+        // Add a click event listener to the "No" button
+        noBtn.addEventListener('click', () => {
+            // Get the next message, looping back to the start if needed
+            const message = noMessages[noClickCount % noMessages.length];
+            updateConfirmationMessage(message);
+            noClickCount++;
+        });
+
+        // A reusable function to update the message and handle scrolling
+        function updateConfirmationMessage(message) {
+            // Hide the message first to create a nice fade effect on change
+            confirmationMessage.classList.add('opacity-0');
+            
+            // Wait for the fade out to finish before changing text and scrolling
+            setTimeout(() => {
+                confirmationMessage.innerText = message;
+                confirmationSection.scrollIntoView({ behavior: 'smooth' });
+                
+                // Fade the new message in
+                confirmationMessage.classList.remove('opacity-0');
+            }, 300); // This delay matches the fade-out transition
+        }
+    </script>
+
+</body>
+</html>
